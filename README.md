@@ -96,6 +96,78 @@ Baseado em testes de estresse empíricos com o dashboard **Titan Omniscience V9-
 
 ---
 
+graph TB
+    subgraph CLIENT_ZONE [Consumer Service / Edge Node]
+        direction TB
+        K_STORE[Client Private Key - Memory Only]
+        SIGNER[Local ECDSA Signer]
+    end
+
+    subgraph TITAN_ENGINE [Titan Intra-Service Auth Engine]
+        direction TB
+        
+        subgraph INFRA [Infrastructure Layer - Adapters]
+            API_GW[FastAPI REST Gateway]
+            TELEMETRY[Telemetry Middleware]
+            CRYPTO_ADAPTER[EcdsaSignerAdapter]
+            SQL_ADAPTER[SQLite / Persistence Adapter]
+        end
+
+        subgraph APP [Application Layer - Orchestration]
+            direction LR
+            CHALLENGE_UC[ChallengeUseCase]
+            MINT_UC[MintTokenUseCase]
+            PORT_AUTH[Authentication Ports]
+        end
+
+        subgraph DOMAIN [Domain Layer - Business Logic]
+            IDENTITY[UserIdentity ENTITY]
+            NONCE_GEN[Nonce / Challenge VO]
+            JWT_ENTITY[TokenClaim ENTITY]
+        end
+
+        subgraph PIPELINE [Multi-Lane Performance Pipeline]
+            ASYNC_LOOP((AsyncIO Event Loop))
+            THREAD_POOL[[ThreadPoolExecutor - CPU Crypto]]
+            SEMAPHORE{Async Semaphore}
+        end
+    end
+
+    subgraph TRUST_ZONE [Autonomous CA - Root of Trust]
+        CA_CORE[Autonomous CA Engine]
+        PUB_STORE[(Public Key Registry)]
+    end
+
+    %% ZKP Handshake Logic
+    SIGNER -- "1. Request Challenge (IdentityID)" --> API_GW
+    API_GW --> CHALLENGE_UC
+    CHALLENGE_UC --> NONCE_GEN
+    NONCE_GEN -- "Return Nonce (High Entropy)" --> SIGNER
+
+    SIGNER -- "2. Proof of Possession (Signature + Nonce)" --> API_GW
+    API_GW --> SEMAPHORE
+    SEMAPHORE --> MINT_UC
+    MINT_UC --> PORT_AUTH
+    PORT_AUTH -- "Verify Key Identity" --> CA_CORE
+    CA_CORE <--> PUB_STORE
+
+    MINT_UC -- "Offload Crypto to CPU Lane" --> THREAD_POOL
+    THREAD_POOL --> CRYPTO_ADAPTER
+    CRYPTO_ADAPTER -- "3. Validated Handshake" --> JWT_ENTITY
+    JWT_ENTITY -- "Issue Stateless JWT" --> SIGNER
+
+    %% Styling
+    style TITAN_ENGINE fill:#fdfaff,stroke:#8e44ad,stroke-width:2px
+    style DOMAIN fill:#fff9e6,stroke:#f1c40f,stroke-width:1px
+    style TRUST_ZONE fill:#f0fff0,stroke:#27ae60,stroke-width:2px
+    style CLIENT_ZONE fill:#f4f7ff,stroke:#2980b9,stroke-width:2px
+    style PIPELINE fill:#fff5f5,stroke:#e74c3c,stroke-dasharray: 5 5
+    
+    classDef tech fill:#fff,stroke:#333,stroke-width:1px,font-size:10px;
+    class ASYNC_LOOP,THREAD_POOL,SEMAPHORE tech;
+
+---
+
 ## 📂 Estrutura de Pastas (DDD Standard)
 
 ```bash
