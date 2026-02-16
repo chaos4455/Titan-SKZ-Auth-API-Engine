@@ -132,7 +132,7 @@ titan_intra_service_auth/
 **Elias Andrade**  
 *Lead Architect - Replika AI Solutions | O2 Data Solutions*
 
-Este projeto faz parte da suíte **"Supreme Edition"**, focada em soberania criptográfica e resiliência de alta magnitude. A implementação prova que a "Ausência de Senhas" é o próximo passo evolutivo para infraestruturas digitais escaláveis.
+Este projeto faz parte da suíte de soluções proprietárias da o2 data solutions, focada em soberania criptográfica e resiliência de alta magnitude. A implementação prova que a "Ausência de Senhas" é o próximo passo evolutivo para infraestruturas digitais escaláveis.
 
 ---
 <p align="center">
