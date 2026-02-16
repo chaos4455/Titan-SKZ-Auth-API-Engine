@@ -96,6 +96,8 @@ Baseado em testes de estresse empíricos com o dashboard **Titan Omniscience V9-
 
 ---
 
+```mermaid
+
 graph TB
     subgraph CLIENT_ZONE [Consumer Service / Edge Node]
         direction TB
@@ -165,7 +167,7 @@ graph TB
     
     classDef tech fill:#fff,stroke:#333,stroke-width:1px,font-size:10px;
     class ASYNC_LOOP,THREAD_POOL,SEMAPHORE tech;
-
+```
 ---
 
 ## 📂 Estrutura de Pastas (DDD Standard)
