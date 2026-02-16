@@ -1,0 +1,44 @@
+# ESTRUTURA DO PROJETO ZKP — Titan Auth
+# Elias Andrade — Replika AI — Micro-revisão 000000001
+
+## PASTA RAIZ (workspace)
+PROJETO-BASE-POC-API-GATEWAY-MULTI-POOL-QEUE - ZKP/
+├── CONSOLE-APP-API-SERVER-FILA-QEUE-MANAGER-POOL-AUTH-V1-STRESS-TEST.PY  # Stress tester ZKP (legado atualizado)
+├── u-data/                    # Gerado pelo stress tester — identidades isoladas
+│   ├── entity_0/
+│   │   └── identity.json      # identity_id, pubkey_pem, private_key_pem
+│   ├── entity_1/
+│   └── ...
+└── titan_intra_service_auth/  # API principal
+    ├── run.py                 # Sobe API (porta 8000)
+    ├── run_ca.py              # [Opcional] Sobe CA standalone (porta 8001)
+    ├── data/
+    │   └── ca_zkp.db          # SQLite do CA (identidades ZKP)
+    ├── src/titan_intra_service_auth/
+    │   ├── infrastructure/
+    │   │   ├── ca/            # Certificate Authority (ZKP)
+    │   │   │   ├── ca_repository.py   # SQLite
+    │   │   │   ├── ca_service.py      # Lógica verify/register
+    │   │   │   └── ca_server.py       # FastAPI standalone
+    │   │   ├── http/routes/
+    │   │   │   ├── auth_routes.py     # POST /v6/auth/mint (legado)
+    │   │   │   └── zkp_routes.py      # POST identity, GET challenge, POST mint
+    │   │   └── zkp_client/
+    │   │       └── keygen.py          # Geração de chaves, assinatura
+    │   └── ...
+    └── docs/
+        ├── ARCHITECTURE.md
+        └── NOTAS-ZKP-CA.md
+
+## ROTAS API
+- POST /v6/auth/mint       — Legado (user/scope/entropy)
+- POST /v6/zkp/identity    — Criar identidade (pubkey_pem)
+- GET  /v6/zkp/challenge   — Obter nonce
+- POST /v6/zkp/mint        — Mint ZKP (identity_id, nonce, signature)
+
+## FLUXO STRESS TESTER
+1. Conecta na API
+2. Cria NUM_IDENTITIES via /v6/zkp/identity
+3. Salva cada uma em u-data/entity_{i}/identity.json
+4. Workers carregam identidades de u-data
+5. Para cada request: GET challenge → assinar → POST mint

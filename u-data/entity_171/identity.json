@@ -1,0 +1,7 @@
+{
+  "identity_id": "0b99d121-97ae-4d95-9a13-18c54f9d9f02",
+  "pubkey_pem": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEAn5McG/gW7f1e3Q5EtikfTloDAqY\nvCKpDfRrKEIfsEseR9CRmh2kkL0GWaomFnAgUaSrk/HtIqXQ+wZGO1uxVw==\n-----END PUBLIC KEY-----\n",
+  "private_key_pem": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgngnGIJ2tfOQkyd2h\nmbAY9oE59JYqJAlF4GReN+beCeahRANCAAQCfkxwb+Bbt/V7dDkS2KR9OWgMCpi8\nIqkN9GsoQh+wSx5H0JGaHaSQvQZZqiYWcCBRpKuT8e0ipdD7BkY7W7FX\n-----END PRIVATE KEY-----\n",
+  "scope": "internal.stress.test",
+  "entity_index": 171
+}
